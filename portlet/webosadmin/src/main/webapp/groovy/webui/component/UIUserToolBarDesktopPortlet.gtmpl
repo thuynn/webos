@@ -103,17 +103,16 @@
 					</div>
 					<% renderDashboards(); %>
 				</div>
-			</div>
-			<div class="TabsContainer">
-				 <div class="UITab NormalToolbarTab">
-						<div>
-							<% if (uicomponent.isWebOSCreated()) { %>
-								<a class="DashboardIcon TBIcon" href="<%= portalURI + UIDesktopPage.NODE_NAME %>">Desktop</a>
-							<% } else { %>
-								<a class="DashboardIcon TBIcon" href="<%= uicomponent.url("CreateWebOS") %>">Desktop</a>								
-							<% } %>
-						</div>
-				 </div>
+			
+				<div class="UITab NormalToolbarTab">
+					<div>
+						<% if (uicomponent.isWebOSCreated()) { %>
+							<a class="DashboardIcon TBIcon" href="<%= portalURI + UIDesktopPage.NODE_NAME %>">Desktop</a>
+						<% } else { %>
+							<a class="DashboardIcon TBIcon" href="<%= uicomponent.url("CreateWebOS") %>">Desktop</a>								
+						<% } %>
+					</div>
+				</div>
 		  </div>
 		</div>
 	</div>
