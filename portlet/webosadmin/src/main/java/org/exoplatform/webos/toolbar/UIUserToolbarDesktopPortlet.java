@@ -52,10 +52,10 @@ import javax.portlet.EventRequest;
 @ComponentConfig(lifecycle = UIApplicationLifecycle.class, template = "app:/groovy/webui/component/UIUserToolBarDesktopPortlet.gtmpl",
    events = {@EventConfig(name = "AddDefaultDashboard", listeners = UIUserToolbarDesktopPortlet.AddDashboardActionListener.class),
       @EventConfig(listeners = UIUserToolbarDesktopPortlet.CreateWebOSActionListener.class),
-      @EventConfig(listeners = UIUserToolbarDesktopPortlet.UserPageNodeDeletedActionListener.class)})
+      @EventConfig(listeners = UIUserToolbarDesktopPortlet.NavigationChangeActionListener.class)})
 public class UIUserToolbarDesktopPortlet extends UIPortletApplication
 {
-   public static String DEFAULT_TAB_NAME = "Tab_0";
+   public static String DEFAULT_TAB_NAME = "Tab_Default";
    
    public UIUserToolbarDesktopPortlet() throws Exception
    {
@@ -119,9 +119,9 @@ public class UIUserToolbarDesktopPortlet extends UIPortletApplication
       return null;
    }
 
-   static public class UserPageNodeDeletedActionListener extends EventListener<UIUserToolbarDesktopPortlet>
+   static public class NavigationChangeActionListener extends EventListener<UIUserToolbarDesktopPortlet>
    {
-      private Log log = ExoLogger.getExoLogger(UserPageNodeDeletedActionListener.class);
+      private Log log = ExoLogger.getExoLogger(NavigationChangeActionListener.class);
 
       @Override
       public void execute(Event<UIUserToolbarDesktopPortlet> event) throws Exception
@@ -184,8 +184,7 @@ public class UIUserToolbarDesktopPortlet extends UIPortletApplication
 
             PageNode pageNode = new PageNode();
             pageNode.setName(_nodeName);
-            pageNode.setLabel(prContext.getApplicationResourceBundle().getString("UIUserToolBarDashboard.page.ClickAndType"));
-            pageNode.setResolvedLabel(prContext.getApplicationResourceBundle());
+            pageNode.setLabel(_nodeName);
             pageNode.setUri(_nodeName);
             pageNode.setPageReference(page.getPageId());
 

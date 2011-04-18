@@ -14,10 +14,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
+    along with this program; if not, see <http://www.gnu.org/licenses />.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform</groupId>
@@ -32,35 +32,35 @@
   <scm>
     <connection>scm:git:git://github.com/exoportal/webos.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/exoportal/webos.git</developerConnection>
-    <url>https://github.com/exoportal/exogtn</url>
+    <url>https://github.com/exoportal/webos</url>
   </scm>
   <ciManagement>
     <system>hudson</system>
     <url>http://builder.exoplatform.org/hudson/job/webos-GateInIntegrated-ci/</url>
   </ciManagement>
   <properties>
-      <org.exoplatform.kernel.version>2.2.7-GA</org.exoplatform.kernel.version>
-      <org.exoplatform.core.version>2.3.7-GA</org.exoplatform.core.version>
-      <org.exoplatform.ws.version>2.1.7-GA</org.exoplatform.ws.version>
-      <org.exoplatform.jcr.version>1.12.7-GA</org.exoplatform.jcr.version>
-      <org.exoplatform.portal.version>3.2.0-PLF-WEBOS-SNAPSHOT</org.exoplatform.portal.version>
+      <org.exoplatform.kernel.version>2.3.0-Beta03</org.exoplatform.kernel.version>
+      <org.exoplatform.core.version>2.4.0-Beta03</org.exoplatform.core.version>
+      <org.exoplatform.ws.version>2.2.0-Beta03</org.exoplatform.ws.version>
+      <org.exoplatform.jcr.version>1.14.0-Beta03</org.exoplatform.jcr.version>
+      <org.exoplatform.portal.version>3.2.0-PLF-Beta2</org.exoplatform.portal.version>
       <org.exoplatform.exopackage.version>1.1.0-Beta05</org.exoplatform.exopackage.version>
       <org.jibx.version>1.2.1</org.jibx.version>
-      <org.shindig.version>1.0-r790473-Patch04</org.shindig.version>
+      <org.shindig.version>1.0-r790473-Patch05</org.shindig.version>
       <nl.captcha.simplecaptcha.version>1.1.1-GA-Patch01</nl.captcha.simplecaptcha.version>
       <org.gatein.common.version>2.0.3-GA</org.gatein.common.version>
       <org.gatein.wci.version>2.0.2-GA</org.gatein.wci.version>
       <org.gatein.pc.version>2.2.0-GA</org.gatein.pc.version>
       <org.picketlink.idm>1.1.7.GA</org.picketlink.idm>
       <org.gatein.wsrp.version>2.0.0-GA</org.gatein.wsrp.version>
-      <org.gatein.mop.version>1.0.4-GA</org.gatein.mop.version>
+      <org.gatein.mop.version>1.1.0-Beta01</org.gatein.mop.version>
       <org.slf4j.version>1.5.6</org.slf4j.version>
       <commons-pool.version>1.2</commons-pool.version>
       <rhino.version>1.6R5</rhino.version>
       <org.codehaus.groovy.version>1.6.5</org.codehaus.groovy.version>
       <javax.servlet.version>2.5</javax.servlet.version>
-      <version.chromattic>1.0.4</version.chromattic>
-      <version.reflext>1.0.0</version.reflext>
+      <version.chromattic>1.1.0-beta2</version.chromattic>
+      <version.reflext>1.1.0-beta12</version.reflext>
       <jcip.version>1.0</jcip.version>
 
       <!-- EXOGTN-106 : forced at packaging level -->
@@ -117,6 +117,12 @@
           <include>**/*.gtmpl</include>
           <include>**/*.xml</include>
         </includes>
+      </resource>
+      <resource>
+         <directory>src/main/resources</directory>
+         <includes>
+            <include>**/*.*</include>
+         </includes>
       </resource>
     </resources>
     <testResources>
@@ -202,9 +208,9 @@
               <tasks>
                 <copy failonerror="false" todir="${basedir}/target/${project.build.finalName}/WEB-INF/classes">
                   <fileset dir="${basedir}/src/main/webapp/WEB-INF/classes">
-                    <include name="**/*_en.properties"/>
+                    <include name="**/*_en.properties" />
                   </fileset>
-                  <globmapper from="*_en.properties" to="*.properties"/>
+                  <globmapper from="*_en.properties" to="*.properties" />
                 </copy>
               </tasks>
             </configuration>
@@ -326,11 +332,6 @@
          <dependency>
             <groupId>org.exoplatform.kernel</groupId>
             <artifactId>exo.kernel.component.common</artifactId>
-            <version>${org.exoplatform.kernel.version}</version>
-         </dependency>
-         <dependency>
-            <groupId>org.exoplatform.kernel</groupId>
-            <artifactId>exo.kernel.component.remote</artifactId>
             <version>${org.exoplatform.kernel.version}</version>
          </dependency>
          <dependency>

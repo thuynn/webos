@@ -19,25 +19,17 @@
 
 package org.exoplatform.webos.webui.page;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.portlet.WindowState;
-
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
-import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.application.UIApplication;
 import org.exoplatform.portal.webui.application.UIGadget;
 import org.exoplatform.portal.webui.application.UIPortlet;
-import org.exoplatform.portal.webui.navigation.PageNavigationUtils;
 import org.exoplatform.portal.webui.page.UIPage;
+import org.exoplatform.portal.webui.page.UIPageActionListener.DeleteGadgetActionListener;
 import org.exoplatform.portal.webui.page.UIPageBody;
 import org.exoplatform.portal.webui.page.UIPageLifecycle;
-import org.exoplatform.portal.webui.page.UIPageActionListener.DeleteGadgetActionListener;
 import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.portal.UIPortalComponentActionListener.ShowLoginFormActionListener;
@@ -50,15 +42,24 @@ import org.exoplatform.webos.services.desktop.DesktopBackground;
 import org.exoplatform.webos.services.desktop.DesktopBackgroundService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIRightClickPopupMenu;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.portlet.WindowState;
 
 /**
  * May 19, 2006
  */
 
+@ComponentConfigs({
 @ComponentConfig(lifecycle = UIPageLifecycle.class, template = "system:/groovy/portal/webui/page/UIDesktopPage.gtmpl", events = {
    @EventConfig(listeners = ShowLoginFormActionListener.class),
    @EventConfig(listeners = DeleteGadgetActionListener.class),
@@ -68,8 +69,14 @@ import org.exoplatform.webui.event.EventListener;
    @EventConfig(listeners = UIDesktopPage.ShowAddNewApplicationActionListener.class),
    @EventConfig(listeners = UIDesktopPage.ChangePageActionListener.class),
    @EventConfig(listeners = UIDesktopPage.ShowPortletActionListener.class),
-   @EventConfig(name = "EditCurrentPage", listeners = UIDesktopPage.EditCurrentPageActionListener.class)})
-public class UIDesktopPage extends UIPage
+   @EventConfig(name = "EditCurrentPage", listeners = UIDesktopPage.EditCurrentPageActionListener.class)}),
+   @ComponentConfig(id = "UIDesktopContextMenu", type = UIRightClickPopupMenu.class, template = "system:/groovy/portal/webui/page/UIDesktopContextMenu.gtmpl", events = {
+      @EventConfig(listeners = UIDesktopPage.ShowAddNewApplicationActionListener.class),
+      @EventConfig(listeners = UIDesktopPage.RefreshPageActionListener.class),
+      @EventConfig(listeners = UIDesktopPage.EditCurrentPageActionListener.class),
+      @EventConfig(listeners = UIDesktopPage.ChangeBackgroundActionListener.class)})
+})
+public final class UIDesktopPage extends UIPage
 {
 
    public static String DESKTOP_FACTORY_ID = "Desktop";
@@ -80,34 +87,26 @@ public class UIDesktopPage extends UIPage
    
    private DesktopBackground currBackground;
 
-   static
+   public UIDesktopPage() throws Exception
    {
-      if (getRealClass(DESKTOP_FACTORY_ID) == null)
-      {
-         realClass.put(DESKTOP_FACTORY_ID, UIDesktopPage.class);
-      }
+      setChildren((List<UIComponent>)new CopyOnWriteArrayList<UIComponent>());      
    }
 
-   public UIDesktopPage()
+   @Override
+   public void processRender(WebuiRequestContext context) throws Exception
    {
-      setChildren((List<UIComponent>)new CopyOnWriteArrayList<UIComponent>());
+      UIRightClickPopupMenu rightClickPopup = getChild(UIRightClickPopupMenu.class);
+      if (rightClickPopup == null)
+      {
+         addChild(UIRightClickPopupMenu.class, "UIDesktopContextMenu", null);
+      }
+      
+      super.processRender(context);
    }
 
    public boolean isShowMaxWindow()
    {
       return true;
-   }
-
-   public List<PageNavigation> getNavigations() throws Exception
-   {
-      List<PageNavigation> allNav = Util.getUIPortal().getNavigations();
-      String removeUser = Util.getPortalRequestContext().getRemoteUser();
-      List<PageNavigation> result = new ArrayList<PageNavigation>();
-      for (PageNavigation nav : allNav)
-      {
-         result.add(PageNavigationUtils.filter(nav, removeUser));
-      }
-      return result;
    }
 
    static public class SaveGadgetPropertiesActionListener extends EventListener<UIPage>
@@ -188,11 +187,30 @@ public class UIDesktopPage extends UIPage
       }
    }
 
-   static public class ShowAddNewApplicationActionListener extends EventListener<UIPage>
+   static public abstract class BaseDesktopActionListener extends EventListener<UIComponent>
    {
-      public void execute(Event<UIPage> event) throws Exception
+      public void execute(Event<UIComponent> event) throws Exception
       {
-         UIPage uiPage = event.getSource();
+         UIComponent source = event.getSource();
+         UIPage uiPage;
+         if (source instanceof UIPage)
+         {
+            uiPage = (UIPage)source;
+         }
+         else
+         {
+            uiPage = source.getAncestorOfType(UIPage.class);
+         }
+         doAction(event, uiPage);
+      }
+
+      protected abstract void doAction(Event<UIComponent> event, UIPage uiPage) throws Exception;
+   }
+
+   static public class ShowAddNewApplicationActionListener extends BaseDesktopActionListener
+   {
+      protected void doAction(Event<UIComponent> event, UIPage uiPage) throws Exception
+      {
          UIPortalApplication uiPortalApp = uiPage.getAncestorOfType(UIPortalApplication.class);
          UIMaskWorkspace uiMaskWorkspace = uiPortalApp.getChildById(UIPortalApplication.UI_MASK_WS_ID);
 
@@ -294,6 +312,13 @@ public class UIDesktopPage extends UIPage
       }
    }
    
+   /**
+    * Return the path to a Dock icon corresponding to the portlet.
+    * <p>
+    * This is used only in template
+    * @param window
+    * @return
+    */
    private String getApplicationIconImageLocation(UIPortlet window)
    {
   	String applicationId = window.getApplicationId();
@@ -363,13 +388,33 @@ public class UIDesktopPage extends UIPage
       Util.getPortalRequestContext().addUIComponentToUpdateByAjax(maskWorkspace);
    }
    
-   public static class EditCurrentPageActionListener extends EventListener<UIDesktopPage>
+   public static class EditCurrentPageActionListener extends BaseDesktopActionListener
    {
       @Override
-      public void execute(Event<UIDesktopPage> event) throws Exception
+      protected void doAction(Event<UIComponent> event, UIPage uiPage) throws Exception
       {
-         event.getSource().switchToEditMode();
+         uiPage.switchToEditMode();
       }
    }
-   
+
+   public static class RefreshPageActionListener extends EventListener<UIRightClickPopupMenu>
+   {
+      @Override
+      public void execute(Event<UIRightClickPopupMenu> event) throws Exception
+      {
+         PortalRequestContext context = Util.getPortalRequestContext();
+         UIPortalApplication uiApp = Util.getUIPortalApplication();
+         context.addUIComponentToUpdateByAjax(uiApp.<UIComponent>getChildById(UIPortalApplication.UI_WORKING_WS_ID));
+         context.setFullRender(true);
+      }
+   }
+
+   public static class ChangeBackgroundActionListener extends BaseDesktopActionListener
+   {
+      @Override
+      protected void doAction(Event<UIComponent> event, UIPage uiPage) throws Exception
+      {
+         ((UIDesktopPage)uiPage).showEditBackgroundPopup(event.getRequestContext());
+      }
+   }
 }

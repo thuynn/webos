@@ -16,30 +16,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.exoplatform.webos.filter;
+package org.exoplatform.webos.services.desktop.test;
 
-import org.exoplatform.webos.webui.page.UIDesktopPage;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import junit.framework.TestCase;
+import org.exoplatform.webos.services.resources.ResourceServer;
 
-public class DesktopClassInitListener implements ServletContextListener
+import java.util.regex.Matcher;
+
+/**
+ * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
+ * @version $Revision$
+ */
+public class TestServerPattern extends TestCase
 {
-   @Override
-   public void contextInitialized(ServletContextEvent sce)
+
+   public void testMatch()
    {
-      try
-      {                 
-         //Need this code to add Class obj to realClass of UIPage
-         Class.forName(UIDesktopPage.class.getName());
-      }
-      catch (ClassNotFoundException e)
-      {
-         throw new IllegalStateException("Can't not load UIDesktopPageClass", e);
-      }
+      Matcher matcher = ResourceServer.PATTERN.matcher("/webos/user/a/b.gif");
+      assertTrue(matcher.matches());
+      assertEquals("user", matcher.group(1));
+      assertEquals("a", matcher.group(2));
+      assertEquals("b.gif", matcher.group(3));
    }
 
-   @Override
-   public void contextDestroyed(ServletContextEvent sce)
+   public void testNoMatch()
    {
+      assertFalse(ResourceServer.PATTERN.matcher("/webos/user//b.gif").matches());
+      assertFalse(ResourceServer.PATTERN.matcher("/webos/user/a/b/c.gif").matches());
    }
 }
