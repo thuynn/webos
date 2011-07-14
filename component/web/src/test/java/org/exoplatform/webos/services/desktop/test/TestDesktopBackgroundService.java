@@ -19,6 +19,12 @@
 
 package org.exoplatform.webos.services.desktop.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
+
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.DataStorage;
@@ -31,13 +37,6 @@ import org.exoplatform.webos.services.desktop.DesktopBackgroundService;
 import org.exoplatform.webos.services.desktop.exception.ImageQuantityException;
 import org.exoplatform.webos.services.desktop.exception.ImageSizeException;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class TestDesktopBackgroundService extends AbstractWebOSTest
 {
    private final static ImageLoader imageLoader;
@@ -45,19 +44,12 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
    /* Hack to create a mock servlet context */
    static
    {
-      Set<String> pathToImages = new HashSet<String>();
-      for(int i = 0; i < 8; i++)
-      {
-         pathToImages.add("backgrounds/background_" + i + ".jpg");
-      }
-
-      imageLoader = new ImageLoader("ImageLoader", pathToImages, Thread.currentThread().getContextClassLoader());
+      imageLoader = new ImageLoader("ImageLoader", System.getProperty("user.dir") + "/target/test-classes");
    }
-
 
    private ChromatticManager chromatticManager;
    private DesktopBackgroundService desktopBackgroundService;
-   private PortalKey siteKey;
+   private PortalKey userSiteKey;
    private String imageName;
    private String mimeType;
    private String encoding;
@@ -67,9 +59,10 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
    @Override
    protected void setUp() throws Exception
    {
-      siteKey = new PortalKey("user", "testUserName");
+      userSiteKey = new PortalKey(PortalConfig.USER_TYPE, "testUserName");
+      
       imageName = "testImageName";
-      pageID = siteKey.getType() + "::"  + siteKey.getId() + "::webos";
+      pageID = userSiteKey.getType() + "::"  + userSiteKey.getId() + "::webos";
       mimeType = "image/jpeg";
       encoding = "UTF-8";
       imgStream = new ByteArrayInputStream(new byte[] {0, 1});
@@ -90,17 +83,35 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
       end();
    }
 
-   public void testGetUserDesktopBackgrounds() throws Exception
+   public void testInitDesktopBackgrounds() throws Exception
    {
-      List<DesktopBackground> bgs = desktopBackgroundService.findDesktopBackgrounds(siteKey);
+      List<DesktopBackground> bgs = desktopBackgroundService.findDesktopBackgrounds(userSiteKey);
+      assertEquals(8, bgs.size());     
+      bgs = desktopBackgroundService.findDesktopBackgrounds(new PortalKey(PortalConfig.USER_TYPE, "demo"));
+      assertEquals(1, bgs.size());     
+            
+      bgs = desktopBackgroundService.findDesktopBackgrounds(new PortalKey(PortalConfig.GROUP_TYPE, "platform/test/legacy"));
+      assertEquals(1, bgs.size());
+      bgs = desktopBackgroundService.findDesktopBackgrounds(new PortalKey(PortalConfig.GROUP_TYPE, "platform/administrators"));
+      assertEquals(8, bgs.size());
+      //TestCase : no default images for specific site
+      //We need empty directory here, but GIT can handle empty dir, workaround:
+      createEmptyDir("backgrounds/group/platform/test/normalized");
+      bgs = desktopBackgroundService.findDesktopBackgrounds(new PortalKey(PortalConfig.GROUP_TYPE, "platform/test/normalized"));
+      assertEquals(0, bgs.size());
+      
+      createEmptyDir("backgrounds/portal/test");
+      bgs = desktopBackgroundService.findDesktopBackgrounds(new PortalKey(PortalConfig.PORTAL_TYPE, "test"));
+      assertEquals(0, bgs.size());
+      bgs = desktopBackgroundService.findDesktopBackgrounds(new PortalKey(PortalConfig.PORTAL_TYPE, "classic"));
       assertEquals(8, bgs.size());
    }
 
    public void testUploadBackgroundImage() throws Exception
    {
       //Test normal flow
-      assertTrue(desktopBackgroundService.uploadBackgroundImage(siteKey, imageName, mimeType, encoding, imgStream));
-      DesktopBackground background = desktopBackgroundService.getDesktopBackground(siteKey, imageName);
+      assertTrue(desktopBackgroundService.uploadBackgroundImage(userSiteKey, imageName, mimeType, encoding, imgStream));
+      DesktopBackground background = desktopBackgroundService.getDesktopBackground(userSiteKey, imageName);
       assertNotNull(background);
       assertEquals(imageName, background.getImageLabel());
    }
@@ -108,13 +119,13 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
    public void testLimitQuantity() throws Exception
    {
       //Test quantity limit (9 images, config in : webos-desktop-service-configuration.xml)
-      List<DesktopBackground> bgs = desktopBackgroundService.findDesktopBackgrounds(siteKey);
+      List<DesktopBackground> bgs = desktopBackgroundService.findDesktopBackgrounds(userSiteKey);
       assertEquals(8, bgs.size());
       try
       {
          for (int i = 0; i < 2; i++)
          {
-            desktopBackgroundService.uploadBackgroundImage(siteKey, imageName + i, mimeType, encoding, imgStream);
+            desktopBackgroundService.uploadBackgroundImage(userSiteKey, imageName + i, mimeType, encoding, imgStream);
          }
          fail("Should throw ImageQuantityException here");
       }
@@ -130,7 +141,7 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
       imgStream = new ByteArrayInputStream(new byte[1024 *1024*2 + 1]);
       try
       {
-         desktopBackgroundService.uploadBackgroundImage(siteKey, imageName, mimeType, encoding, imgStream);
+         desktopBackgroundService.uploadBackgroundImage(userSiteKey, imageName, mimeType, encoding, imgStream);
          fail("Should throw ImageSizeException here");
       }
       catch (ImageSizeException ex)
@@ -142,35 +153,39 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
 
    public void testDuplicateImageName() throws Exception
    {
-      List<DesktopBackground> desktopBackgrounds = desktopBackgroundService.findDesktopBackgrounds(siteKey);
-      assertNotNull(desktopBackgrounds);
-      assertTrue(desktopBackgrounds.size() > 0);
-
-      imageName = desktopBackgrounds.get(0).getImageLabel();
-      System.out.println("Current image name: " + imageName);
-      assertNull(desktopBackgroundService.getDesktopBackground(siteKey, imageName + "(0)"));
+      PortalKey demoSiteKey = new PortalKey(PortalConfig.USER_TYPE, "demo");
+      String origName = "background_0.jpg";
+      assertNotNull(desktopBackgroundService.getDesktopBackground(demoSiteKey, origName));
+      
+      String dubName = "background_0(0).jpg";                       
+      assertNull(desktopBackgroundService.getDesktopBackground(demoSiteKey, dubName));
       
       //Now upload image with the same name
       //It must be completed succesfully and uploaded image's name is added postfix automatically
-      assertTrue(desktopBackgroundService.uploadBackgroundImage(siteKey, imageName, mimeType, encoding, imgStream));
-      assertNotNull(desktopBackgroundService.getDesktopBackground(siteKey, imageName + "(0)"));
+      assertTrue(desktopBackgroundService.uploadBackgroundImage(demoSiteKey, origName, mimeType, encoding, imgStream));
+      assertNotNull(desktopBackgroundService.getDesktopBackground(demoSiteKey, dubName));
+      
+      //Increase the index
+      String dubName2 = "background_0(1).jpg";
+      assertTrue(desktopBackgroundService.uploadBackgroundImage(demoSiteKey, origName, mimeType, encoding, imgStream));
+      assertNotNull(desktopBackgroundService.getDesktopBackground(demoSiteKey, dubName2));
    }
 
    public void testGetUserDesktopBackground() throws Exception
    {
-      desktopBackgroundService.uploadBackgroundImage(siteKey, imageName, mimeType, encoding, imgStream);
+      desktopBackgroundService.uploadBackgroundImage(userSiteKey, imageName, mimeType, encoding, imgStream);
 
       //Normal flow
-      DesktopBackground background = desktopBackgroundService.getDesktopBackground(siteKey, imageName);
+      DesktopBackground background = desktopBackgroundService.getDesktopBackground(userSiteKey, imageName);
       assertNotNull(background);
       assertEquals(imageName, background.getImageLabel());
 
       //get background that doesn't exists
-      background = desktopBackgroundService.getDesktopBackground(siteKey, imageName + new Date().getTime());
+      background = desktopBackgroundService.getDesktopBackground(userSiteKey, imageName + new Date().getTime());
       assertNull(background);
 
       //get background image with null imageName
-      background = desktopBackgroundService.getDesktopBackground(siteKey, null);
+      background = desktopBackgroundService.getDesktopBackground(userSiteKey, null);
       assertNull(background);
    }
 
@@ -223,8 +238,8 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
       uploadImage();
 
       //Normal flow
-      assertTrue(desktopBackgroundService.removeBackgroundImage(siteKey, imageName));
-      DesktopBackground background = desktopBackgroundService.getDesktopBackground(siteKey, imageName);
+      assertTrue(desktopBackgroundService.removeBackgroundImage(userSiteKey, imageName));
+      DesktopBackground background = desktopBackgroundService.getDesktopBackground(userSiteKey, imageName);
       assertNull(background);
 
       //Always return false if remove image with null userName
@@ -234,7 +249,7 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
       //Remove image that doesn't exists
       try
       {
-         desktopBackgroundService.removeBackgroundImage(siteKey, imageName + new Date().getTime());
+         desktopBackgroundService.removeBackgroundImage(userSiteKey, imageName + new Date().getTime());
          fail("Should throw IllegaStateException here");
       }
       catch (IllegalStateException ex)
@@ -244,8 +259,8 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
 
    private void uploadImage() throws Exception
    {
-      assertTrue(desktopBackgroundService.uploadBackgroundImage(siteKey, imageName, mimeType, encoding, imgStream));
-      DesktopBackground background = desktopBackgroundService.getDesktopBackground(siteKey, imageName);
+      assertTrue(desktopBackgroundService.uploadBackgroundImage(userSiteKey, imageName, mimeType, encoding, imgStream));
+      DesktopBackground background = desktopBackgroundService.getDesktopBackground(userSiteKey, imageName);
       assertNotNull(background);
    }
 
@@ -254,7 +269,7 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
       DataStorage dataStorage = (DataStorage)portalContainer.getComponentInstanceOfType(DataStorage.class);
 
       UserPortalConfigService configService = (UserPortalConfigService)PortalContainer.getComponent(UserPortalConfigService.class);
-      configService.createUserSite(siteKey.getId());
+      configService.createUserSite(userSiteKey.getId());
 
       Page page = new Page();
       page.setName("webos");
@@ -262,7 +277,13 @@ public class TestDesktopBackgroundService extends AbstractWebOSTest
       page.setFactoryId("Desktop");
       page.setShowMaxWindow(true);
       page.setOwnerType(PortalConfig.USER_TYPE);
-      page.setOwnerId(siteKey.getId());
+      page.setOwnerId(userSiteKey.getId());
       dataStorage.create(page);
+   }
+   
+   private void createEmptyDir(String path)
+   {
+      File dir = new File("target/test-classes/" + path);
+      dir.mkdirs();
    }
 }

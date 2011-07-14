@@ -1,22 +1,17 @@
 <%
-	import java.util.ArrayList; 
-	import org.exoplatform.portal.config.model.PageNavigation;
-	import org.exoplatform.portal.config.model.PageNode;
-	import org.exoplatform.portal.webui.util.Util;
-	import org.exoplatform.portal.webui.portal.UIPortal;
-	import org.exoplatform.portal.application.PortalRequestContext;
-	import org.exoplatform.web.application.JavascriptManager;
+    import org.exoplatform.portal.application.PortalRequestContext;
+    import org.exoplatform.portal.mop.user.UserNode;
+    import org.exoplatform.portal.webui.util.Util;
+    import org.exoplatform.portal.webui.portal.UIPortal;
+    import org.exoplatform.web.application.JavascriptManager;
 	
-	//PageNavigation pageNavigation = uicomponent.getPageNavigation();
-	//ArrayList<PageNode> nodes = pageNavigation.getNodes();
-	ArrayList<PageNode> nodes = uicomponent.getSameSiblingsNode();
-	def tabNbs = uicomponent.getCurrentNumberOfTabs();
+	def nodes = uicomponent.getSameSiblingsNode();
+	def tabNbs = nodes.size();
 
 	PortalRequestContext pcontext = Util.getPortalRequestContext();	
-	def String portalURI = pcontext.getPortalURI();
+	def portalURI = pcontext.getPortalURI();
 
-	PageNode selectedNode = Util.getUIPortal().getSelectedNode();
-	PageNode node; 
+	def selectedNode = Util.getUIPortal().getSelectedUserNode();
 	
 	JavascriptManager jsManager = pcontext.getJavascriptManager();
 	jsManager.importJavascript("eXo.webui.UIWebOSTabbedDashboard", "/webosadmin/javascript/");

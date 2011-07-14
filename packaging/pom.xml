@@ -41,9 +41,25 @@
          </modules>
       </profile>
       <profile>
+         <id>release</id>
+         <modules>
+            <module>module</module>
+            <module>pkg</module>
+            <module>product</module>
+            <module>tomcat</module>
+            <module>ear</module>
+         </modules>
+      </profile>
+      <profile>
          <id>pkg-tomcat</id>
          <modules>
             <module>tomcat</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>pkg-jbossear</id>
+         <modules>
+            <module>ear</module>
          </modules>
       </profile>
    </profiles>

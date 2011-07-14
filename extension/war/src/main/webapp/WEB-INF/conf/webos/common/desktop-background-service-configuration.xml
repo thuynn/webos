@@ -35,6 +35,14 @@
         <description>Maximum size of the image that user can upload</description>
         <value>2</value>
       </value-param> 
+	  <value-param>
+        <name>default.image.path</name>
+        <description>
+        	Path to folder that contains all image folders for all sites.
+        	By default, It is in webosResources 
+        </description>
+        <value>/backgrounds</value>
+      </value-param> 
     </init-params>
   </component>
   
@@ -97,6 +105,9 @@
           <value>org.chromattic.ext.ntdef.NTFile</value>
           <value>org.chromattic.ext.ntdef.NTFolder</value>
           <value>org.chromattic.ext.ntdef.NTResource</value>
+          <value>org.exoplatform.portal.mop.i18n.I18Nized</value>
+          <value>org.exoplatform.portal.mop.i18n.LanguageSpace</value>
+          <value>org.exoplatform.portal.mop.i18n.Language</value>
         </values-param>
         <properties-param>
           <name>options</name>

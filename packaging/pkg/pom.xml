@@ -62,6 +62,225 @@
       <version>2.0.0-SNAPSHOT</version>
       <type>js</type>
     </dependency>
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>${cglib.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <version>${commons-pool.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.gadgets-server</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.management</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.portlet.web</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>net.oauth</groupId>
+      <artifactId>core</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.dashboard</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.web.eXoResources</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.server.tomcat.plugin</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.starter.war</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.portlet.dashboard</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.portlet.exoadmin</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.web.rest</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>gatein.portal.component.wsrp</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.eXoGadgets</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.web.portal</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>${antlr.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>${commons-dbcp.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>rhino</groupId>
+      <artifactId>js</artifactId>
+      <version>${rhino.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.component.ftp</artifactId>
+      <version>${org.exoplatform.jcr.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>${asm.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-tomcat</artifactId>
+      <version>${org.gatein.wci.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <version>${jcr.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.framework.command</artifactId>
+      <version>${org.exoplatform.jcr.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.pc</groupId>
+      <artifactId>pc-controller</artifactId>
+      <version>${org.gatein.pc.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.tool</groupId>
+      <artifactId>exo.tool.webunit</artifactId>
+      <version>${exo.tool.webunit.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>${javassist.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>html-parser</groupId>
+      <artifactId>html-parser</artifactId>
+      <version>${html-parser.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-exo</artifactId>
+      <version>${org.gatein.wci.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.component.webdav</artifactId>
+      <version>${org.exoplatform.jcr.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jsecurity</groupId>
+      <artifactId>jsecurity</artifactId>
+      <version>${org.jsecurity.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.framework.web</artifactId>
+      <version>${org.exoplatform.jcr.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.ws</groupId>
+      <artifactId>exo.ws.frameworks.servlet</artifactId>
+      <version>${org.exoplatform.ws.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>${org.hsqldb.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+    <!-- Missing packaging dependencies -->
+    <dependency><groupId>bouncycastle</groupId><artifactId>bcmail-jdk14</artifactId><version>136</version></dependency>
+    <dependency><groupId>bouncycastle</groupId><artifactId>bcprov-jdk14</artifactId><version>136</version></dependency>
+    <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId><version>1.5.6</version></dependency>
+    <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-jdk14</artifactId><version>1.5.6</version></dependency>
+    <dependency><groupId>commons-pool</groupId><artifactId>commons-pool</artifactId><version>1.2</version></dependency>
+    <dependency><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId><version>1.0.4</version></dependency>
+    <dependency><groupId>commons-dbcp</groupId><artifactId>commons-dbcp</artifactId><version>1.2.1</version></dependency>
+
+    
   </dependencies>
   <build>
     <plugins>
@@ -126,7 +345,7 @@
     <profile>
       <id>pkg-tomcat-legacy</id>
       <build>
-        <finalName>GateIn-${project.version}</finalName>
+        <finalName>WebOS-${project.version}</finalName>
         <plugins>
           <!-- Ensure your environment is correctly setup -->
           <plugin>
@@ -204,7 +423,11 @@
         </plugins>
       </build>
     </profile>
-    <!--plugin>
+    <profile>
+      <id>arc-tomcat</id>
+      <build>
+        <plugins>
+          <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
             <executions>
               <execution>
@@ -217,15 +440,17 @@
                   <descriptors>
                     <descriptor>src/main/assembly/tomcat-zip.xml</descriptor>
                   </descriptors>
-                  <attach>false</attach>
                 </configuration>
               </execution>
             </executions>
-          </plugin-->
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>pkg-jbossas</id>
       <build>
-        <finalName>GateIn-${project.version}</finalName>
+        <finalName>WebOS-${project.version}</finalName>
         <plugins>
           <!-- Ensure your environment is correctly setup -->
           <plugin>
