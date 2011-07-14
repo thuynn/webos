@@ -120,20 +120,16 @@
        desktopLink = uicomponent.url("CreateWebOS");
     }
 %>
-	<div class="UIUserToolBarDesktopPortlet" id="$uicomponent.id">
-		<div class="UIHorizontalTabs">
-			<div class="TabsContainer">
-				<div class="UITab NormalToolbarTab">
-					<div class="">
-					   <a class="DashboardIcon TBIcon" href="<%= dashboardLink %>">Dashboard</a>
-					</div>
-					<% renderDashboards(userNodes); %>
-				</div>
-				<div class="UITab NormalToolbarTab">
-					<div>
-					   <a class="DashboardIcon TBIcon" href="<%= desktopLink %>">Desktop</a>
-					</div>
-				 </div>
-		  </div>
-		</div>
-	</div>
+	<ul class="UIUserToolBarDesktopPortlet UIHorizontalTabs ClearFix" id="$uicomponent.id">
+		<li class="UITab NormalToolbarTab">
+			<a class="DashboardIcon TBIcon" href="<%= uicomponent.url("AddDefaultDashboard", defaultDashboardPage); %>">Dashboard</a>
+			<% renderDashboards(); %>
+		</li>
+		<li class="UITab NormalToolbarTab">
+			<% if (uicomponent.isWebOSCreated()) { %>
+				<a class="DashboardIcon TBIcon" href="<%= portalURI + UIDesktopPage.NODE_NAME %>">Desktop</a>
+			<% } else { %>
+				<a class="DashboardIcon TBIcon" href="<%= uicomponent.url("CreateWebOS") %>">Desktop</a>								
+			<% } %>
+		</li>
+	</ul>

@@ -1,5 +1,4 @@
 .UIPageDesktop {
-	position: relative ;
 	overflow: hidden ;
 	background: #aaaaaa url('background/eXoDesktopBG.jpg') repeat-x left top;
 }
